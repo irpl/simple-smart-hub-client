@@ -6,6 +6,7 @@ body {
   line-height: 1.5;
   background-color: #f1f3fb;
   height: 100%;
+  margin: 0;
   /* padding: 0 2rem; */
 }
 img {

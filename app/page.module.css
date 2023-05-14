@@ -4,7 +4,7 @@
 } */
 
  .card {
-	 /* margin: 2rem auto; */
+	 margin: 8px;
 	 display: flex;
 	 flex-direction: column;
 	 width: 100%;
@@ -132,6 +132,23 @@ input > .input {
 .chart-section {
   width: 100%;
 }
-/* .user-light {
-  display: flex;
-} */
+.api-card-form {
+	display: flex;
+	justify-content: space-between;
+}
+
+.card:has(> .api-card-form) {
+	position: absolute;
+}
+.api-card-form > .input {
+	padding-top: 0;
+	margin-top: 0;
+	flex-direction: column-reverse;
+	justify-content: center;
+}
+.api-card-form > .input > .input-label{
+	position: relative;
+}
+.api-card-form > .action {
+	width: 120px;
+}
