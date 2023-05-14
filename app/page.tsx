@@ -91,7 +91,7 @@ export default function Home() {
       localStorage.setItem("api_url", apiUrl);
     } 
     else {
-      setApiUrl(localStorage.getItem("api_url"));
+      // setApiUrl(localStorage.getItem("api_url"));
       getData();
     }
     
