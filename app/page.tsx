@@ -137,7 +137,7 @@ export default function Home() {
           <div className={styles["card-image"]}>
             <h2 className={styles["card-heading"]}>
               Get started
-              <small>Let's set up our smart home</small>
+              <small>Let&apos;s set up our smart home</small>
             </h2>
           </div>
           <form className={styles["card-form"]} onSubmit={handleSubmit}>
