@@ -41,7 +41,7 @@
 	 margin-top: 0.25em;
 }
  .card-form {
-	 padding: 2rem 1rem 0;
+	 padding: 0rem 1rem 0;
 }
  .input, .input-light {
 	 display: flex;
@@ -95,12 +95,17 @@
 	 border-radius: 6px;
 	 color: #fff;
 	 border: 0;
+   cursor: pointer;
+   margin-bottom: 1rem;
+}
+.action-button:hover {
+  background-color: #4a3f9d;
 }
  .action-button:focus {
 	 outline: 0;
 }
  .card-info {
-	 padding: 1rem 1rem;
+	 padding-top: 1rem;
 	 text-align: center;
 	 font-size: 0.875rem;
 	 color: #8597a3;

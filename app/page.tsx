@@ -136,6 +136,9 @@ export default function Home() {
               <small>Let&apos;s set up our smart home</small>
             </h2>
           </div>
+          <div className={styles["card-info"]}>
+            <p>Set your smart hub settings here</p>
+          </div>
           <form className={styles["card-form"]} onSubmit={handleSubmit}>
             <div className={styles["input"]}>
               <input type="number" className={styles["input-field"]} onChange={handleChangeTemp} value={userTemp} required />
@@ -166,9 +169,7 @@ export default function Home() {
               <button className={styles["action-button"]}>Submit</button>
             </div>
           </form>
-          <div className={styles["card-info"]}>
-            <p>By signing up you are agreeing to our <a href="#">Terms and Conditions</a></p>
-          </div>
+          
         </div>
 
         <div className={styles["chart-section"]}>
