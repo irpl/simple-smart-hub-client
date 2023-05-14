@@ -105,7 +105,7 @@ export default function Home() {
       },
       title: {
         display: true,
-        text: 'Chart.js Line Chart',
+        text: 'Graph showing ambient temperature over time',
       },
     },
   };
