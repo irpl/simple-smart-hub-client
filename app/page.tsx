@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import type { ChartData, ChartOptions } from 'chart.js';
+// import type { ChartData, ChartOptions } from 'chart.js';
 
 import { Line } from 'react-chartjs-2';
 import styles from './page.module.css'
@@ -25,23 +25,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-export const chart_options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Line Chart',
-    },
-  },
-};
-
-export const chart_data = ""
-
-
 
 export default function Home() {
   const [apiUrl, setApiUrl] = useState("");
@@ -113,6 +96,19 @@ export default function Home() {
     }
     
   }, [])
+
+  const chart_options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Line Chart',
+      },
+    },
+  };
 
   return (
     <>
