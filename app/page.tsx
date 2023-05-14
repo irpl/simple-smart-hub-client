@@ -42,8 +42,8 @@ export default function Home() {
 
   const handleSetAPIUrl = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(apiUrl)
     localStorage.setItem("api_url", apiUrl)
+    getData();
   }
 
   const handleChangeAPIUrl = (e: ChangeEvent<HTMLInputElement>) => {
