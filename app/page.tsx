@@ -190,7 +190,7 @@ export default function Home() {
           {<Line options={chart_options} data={{
             datasets: [
               {
-                label: "deep",
+                label: "Temperature",
                 data: data,
                 borderColor: "rgb(255, 99, 132)",
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
