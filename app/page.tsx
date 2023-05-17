@@ -80,7 +80,7 @@ export default function Home() {
     let api_url = localStorage.getItem("api_url");
 
     if (api_url != null) {
-      fetch(api_url, {
+      fetch(api_url + "/settings", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
