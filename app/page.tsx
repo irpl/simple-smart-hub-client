@@ -77,6 +77,20 @@ export default function Home() {
       light_duration: lightDuration
     }
     console.log(body)
+    let api_url = localStorage.getItem("api_url");
+
+    if (api_url != null) {
+      fetch(api_url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      })
+    }
+    else {
+      alert ("API URL has not been set.")
+    }
   }
 
   const getData = async () => {
