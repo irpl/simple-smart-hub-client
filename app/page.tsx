@@ -84,7 +84,7 @@ export default function Home() {
     e.preventDefault();
     let body = {
       user_temp: userTemp,
-      user_light: isSunset ? "sunset" : (new Date()).toISOString().split("T")[0]+ "T"+userLight,
+      user_light: isSunset ? "sunset" : userLight,
       light_duration: lightDuration
     }
     console.log(body)
