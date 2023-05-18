@@ -1,6 +1,6 @@
 "use client";
 // import Image from 'next/image'
-import { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect, use } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -31,13 +31,24 @@ export default function Home() {
   const [userTemp, setUserTemp] = useState(0);
   const [userLight, setUserLight] = useState("18:00:00");
   const [lightDuration, setLightDuration] = useState("1h");
-  const [isSunset, setIsSunset] = useState(false)
-  const [data, setData] = useState([])
+  const [isSunset, setIsSunset] = useState(false);
+  const [data, setData] = useState([]);
+  const [plotCount, setPlotCount] = useState(10);
+  
+  
 
   type PointType = {
     temperature: number,
     presence: boolean,
     datetime: string
+  }
+
+  const handlePlotCountChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    let plotCountValue = parseInt(e.target.value);
+    // console.log(plotCountValue);
+    setPlotCount(plotCountValue);
+    // console.log(plotCount)
+    // await getData();
   }
 
   const handleSetAPIUrl = (e: FormEvent<HTMLFormElement>) => {
@@ -96,7 +107,7 @@ export default function Home() {
   const getData = async () => {
     let api_url = localStorage.getItem("api_url");
     // let api_url = apiUrl;
-    let response = await fetch(api_url + "/graph?size=10");
+    let response = await fetch(api_url + "/graph?size=" + plotCount);
     let raw_data = await response.json()
     setData(await raw_data.map((point: PointType) => ({ x: point.datetime, y: point.temperature })));
   }
@@ -106,7 +117,11 @@ export default function Home() {
     } 
     else {
       // setApiUrl(localStorage.getItem("api_url"));
-      getData();
+      const interval = setInterval(() => {
+        getData();
+      }, 1000);
+      return () => clearInterval(interval);
+      
     }
     
   }, [])
@@ -197,6 +212,11 @@ export default function Home() {
               }
             ]
           }} />}
+          {/* <div>
+            <input type="range"step={5} name="vol" min="0" max="50" onChange={handlePlotCountChange} value={plotCount}/>
+            <span>{plotCount}</span>
+          </div> */}
+
         </div>
       </div>
     </>
