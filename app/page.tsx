@@ -117,10 +117,10 @@ export default function Home() {
     } 
     else {
       // setApiUrl(localStorage.getItem("api_url"));
-      const interval = setInterval(() => {
+      // const interval = setInterval(() => {
         getData();
-      }, 1000);
-      return () => clearInterval(interval);
+      // }, 1000);
+      // return () => clearInterval(interval);
       
     }
     
