@@ -149,7 +149,7 @@ export default function Home() {
         <form className={styles["api-card-form"]} onSubmit={handleSetAPIUrl}>
           <div className={styles["input"]}>
             <input type="text" className={styles["input-field"]} onChange={handleChangeAPIUrl} value={apiUrl} required />
-            <label className={styles["input-label"]}>API URL (https://your-iot-api.com)</label>
+            <label className={styles["input-label"]}>API URL (eg. https://your-iot-api.com)</label>
           </div>
           <div className={styles["action"]}>
             <button className={styles["action-button"]}>Set</button>
