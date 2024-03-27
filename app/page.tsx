@@ -106,6 +106,9 @@ export default function Home() {
 
   const getData = async () => {
     let api_url = localStorage.getItem("api_url");
+    if (!api_url) {
+      return;
+    }
     // let api_url = apiUrl;
     setPlotCount((prev) => prev);
     let response = await fetch(api_url + "/graph?size=" + plotCount);
@@ -125,9 +128,7 @@ export default function Home() {
   // }, []);
 
   useInterval(() => {
-    // Your custom logic here
     getData();
-    //setCount(count + 1);
   }, 1000);
 
   const chart_options = {
