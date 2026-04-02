@@ -38,7 +38,7 @@ export default function Home() {
   const [userTemp, setUserTemp] = useState(0);
   const [userLight, setUserLight] = useState("18:00:00");
   const [lightDuration, setLightDuration] = useState("1h");
-  const [isSunset, setIsSunset] = useState(false);
+
   const [data, setData] = useState<ChartPoint[]>([]);
   const [plotCount, setPlotCount] = useState(10);
 
@@ -74,15 +74,12 @@ export default function Home() {
     setLightDuration(e.target.value);
   };
 
-  const handleChangeIsSunset = () => {
-    setIsSunset((prev) => !prev);
-  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const body = {
       user_temp: userTemp,
-      user_light: isSunset ? "sunset" : userLight,
+      user_light: userLight,
       light_duration: lightDuration,
     };
     const api_url = localStorage.getItem("api_url");
@@ -184,26 +181,14 @@ export default function Home() {
 
               <div className={styles["form-group"]}>
                 <label className={styles["form-label"]}>Lighting trigger</label>
-                <div className={styles["light-row"]}>
-                  <div className={styles["light-input-wrap"]}>
-                    <input
-                      disabled={isSunset}
-                      type="time"
-                      step="1"
-                      className={styles["form-input"]}
-                      onChange={handleChangeLight}
-                      value={userLight}
-                      required
-                    />
-                  </div>
-                  <div className={styles["toggle-wrap"]}>
-                    <label className={styles.toggle}>
-                      <input type="checkbox" onChange={handleChangeIsSunset} checked={isSunset} />
-                      <span className={styles["toggle-track"]} />
-                    </label>
-                    <span className={styles["toggle-label"]}>Sunset</span>
-                  </div>
-                </div>
+                <input
+                  type="time"
+                  step="1"
+                  className={styles["form-input"]}
+                  onChange={handleChangeLight}
+                  value={userLight}
+                  required
+                />
               </div>
 
               <div className={styles["form-group"]}>
