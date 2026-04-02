@@ -130,88 +130,138 @@ export default function Home() {
         position: "top" as const,
       },
       title: {
-        display: true,
-        text: "Graph showing ambient temperature over time",
+        display: false,
+      },
+    },
+    scales: {
+      x: {
+        grid: { color: "rgba(0,0,0,0.04)" },
+      },
+      y: {
+        grid: { color: "rgba(0,0,0,0.04)" },
       },
     },
   };
 
   return (
-    <>
-      <div className={styles["card"]}>
-        <form className={styles["api-card-form"]} onSubmit={handleSetAPIUrl}>
-          <div className={styles["input"]}>
-            <input type="text" className={styles["input-field"]} onChange={handleChangeAPIUrl} value={apiUrl} required />
-            <label className={styles["input-label"]}>API URL (eg. https://your-iot-api.com)</label>
-          </div>
-          <div className={styles["action"]}>
-            <button className={styles["action-button"]}>Set</button>
-          </div>
-        </form>
-      </div>
-      <div className={styles["container"]}>
-        <div className={styles["card"]}>
-          <div className={styles["card-image"]}>
-            <h2 className={styles["card-heading"]}>
-              Get started
-              <small>Let&apos;s set up our smart home</small>
-            </h2>
-          </div>
-          <div className={styles["card-info"]}>
-            <p>Set your smart hub settings here</p>
-          </div>
-          <form className={styles["card-form"]} onSubmit={handleSubmit}>
-            <div className={styles["input"]}>
-              <input type="number" className={styles["input-field"]} onChange={handleChangeTemp} value={userTemp} required />
-              <label className={styles["input-label"]}>Cooling trigger (&deg;C)</label>
-            </div>
+    <div className={styles.page}>
+      <header className={styles["page-header"]}>
+        <h1 className={styles["page-title"]}>Smart Home Hub</h1>
+        <p className={styles["page-subtitle"]}>Monitor and control your smart home devices</p>
+      </header>
 
-            <div className={styles["input-light"]}>
-              <input disabled={isSunset} type="time" step={"1"} className={styles["input-field"]} onChange={handleChangeLight} value={userLight} required />
-              <label className={styles["input-label"]}>Lighting trigger</label>
-              <div>
-                <input type="checkbox" onChange={handleChangeIsSunset} defaultChecked={false} />
-                <span> Sunset</span>
+      <form className={styles["api-bar"]} onSubmit={handleSetAPIUrl}>
+        <span className={styles["api-bar-label"]}>API</span>
+        <input
+          type="text"
+          className={styles["api-bar-input"]}
+          onChange={handleChangeAPIUrl}
+          value={apiUrl}
+          placeholder="https://your-iot-api.com"
+          required
+        />
+        <button className={styles["api-bar-btn"]}>Connect</button>
+      </form>
+
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <div className={styles["card-header"]}>
+            <h2 className={styles["card-header-title"]}>Settings</h2>
+            <p className={styles["card-header-sub"]}>Configure your smart hub preferences</p>
+          </div>
+          <div className={styles["card-body"]}>
+            <form onSubmit={handleSubmit}>
+              <div className={styles["form-group"]}>
+                <label className={styles["form-label"]}>Cooling trigger (&deg;C)</label>
+                <input
+                  type="number"
+                  className={styles["form-input"]}
+                  onChange={handleChangeTemp}
+                  value={userTemp}
+                  required
+                />
               </div>
-            </div>
 
-            <div className={styles["input"]}>
-              <input
-                type="text"
-                className={styles["input-field"]}
-                onChange={handleChangeLightDuration}
-                value={lightDuration}
-                required
-                pattern="^(?=\d+[ywdhms])(( ?\d+y)?(?!\d))?(( ?\d+w)?(?!\d))?(( ?\d+d)?(?!\d))?(( ?\d+h)?(?!\d))?(( ?\d+m)?(?!\d))?(( ?\d+s)?(?!\d))?( ?\d+ms)?$"
-              />
-              <label className={styles["input-label"]}>Light Duration (eg. 1h, 30m, 40s)</label>
-            </div>
-            <div className={styles["action"]}>
-              <button className={styles["action-button"]}>Submit</button>
-            </div>
-          </form>
+              <div className={styles["form-group"]}>
+                <label className={styles["form-label"]}>Lighting trigger</label>
+                <div className={styles["light-row"]}>
+                  <div className={styles["light-input-wrap"]}>
+                    <input
+                      disabled={isSunset}
+                      type="time"
+                      step="1"
+                      className={styles["form-input"]}
+                      onChange={handleChangeLight}
+                      value={userLight}
+                      required
+                    />
+                  </div>
+                  <div className={styles["toggle-wrap"]}>
+                    <label className={styles.toggle}>
+                      <input type="checkbox" onChange={handleChangeIsSunset} checked={isSunset} />
+                      <span className={styles["toggle-track"]} />
+                    </label>
+                    <span className={styles["toggle-label"]}>Sunset</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles["form-group"]}>
+                <label className={styles["form-label"]}>Light duration</label>
+                <input
+                  type="text"
+                  className={styles["form-input"]}
+                  onChange={handleChangeLightDuration}
+                  value={lightDuration}
+                  required
+                  placeholder="e.g. 1h, 30m, 40s"
+                  pattern="^(?=\d+[ywdhms])(( ?\d+y)?(?!\d))?(( ?\d+w)?(?!\d))?(( ?\d+d)?(?!\d))?(( ?\d+h)?(?!\d))?(( ?\d+m)?(?!\d))?(( ?\d+s)?(?!\d))?( ?\d+ms)?$"
+                />
+              </div>
+
+              <button type="submit" className={styles["submit-btn"]}>
+                Save Settings
+              </button>
+            </form>
+          </div>
         </div>
 
-        <div className={styles["chart-section"]}>
-          <Line
-            options={chart_options}
-            data={{
-              datasets: [
-                {
-                  label: "Temperature",
-                  data: data,
-                  borderColor: "rgb(255, 99, 132)",
-                  backgroundColor: "rgba(255, 99, 132, 0.5)",
-                },
-              ],
-            }}
-          />
-          <div>
-            <input type="range" step={5} name="vol" min="0" max="50" onChange={handlePlotCountChange} value={plotCount} />
-            <span>{plotCount}</span>
+        <div className={styles["chart-card"]}>
+          <h3 className={styles["chart-title"]}>Ambient Temperature</h3>
+          <div className={styles["chart-wrap"]}>
+            <Line
+              options={chart_options}
+              data={{
+                datasets: [
+                  {
+                    label: "Temperature",
+                    data: data,
+                    borderColor: "#6658d3",
+                    backgroundColor: "rgba(102, 88, 211, 0.1)",
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 3,
+                    pointBackgroundColor: "#6658d3",
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div className={styles["slider-row"]}>
+            <span className={styles["slider-label"]}>Data points</span>
+            <input
+              type="range"
+              step={5}
+              min="0"
+              max="50"
+              onChange={handlePlotCountChange}
+              value={plotCount}
+              className={styles.slider}
+            />
+            <span className={styles["slider-value"]}>{plotCount}</span>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

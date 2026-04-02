@@ -1,11 +1,8 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Simple Smart Home Hub',
-  description: 'Webapp tester for ECSE3038 final project',
+  title: 'Smart Home Hub',
+  description: 'Monitor and control your smart home devices',
 }
 
 export default function RootLayout({
@@ -15,7 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   )
 }
