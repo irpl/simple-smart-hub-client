@@ -1,13 +1,37 @@
 "use client";
-// import Image from 'next/image'
-import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect, useRef, useCallback } from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
-// import type { ChartData, ChartOptions } from 'chart.js';
-
 import { Line } from "react-chartjs-2";
 import styles from "./page.module.css";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
+type PointType = {
+  temperature: number;
+  presence: boolean;
+  datetime: string;
+};
+
+type ChartPoint = {
+  x: string;
+  y: number;
+};
+
+function useInterval(callback: () => void, delay: number) {
+  const savedCallback = useRef(callback);
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    const id = setInterval(tick, delay);
+    return () => clearInterval(id);
+  }, [delay]);
+}
 
 export default function Home() {
   const [apiUrl, setApiUrl] = useState("");
@@ -15,47 +39,23 @@ export default function Home() {
   const [userLight, setUserLight] = useState("18:00:00");
   const [lightDuration, setLightDuration] = useState("1h");
   const [isSunset, setIsSunset] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<ChartPoint[]>([]);
   const [plotCount, setPlotCount] = useState(10);
 
-  type PointType = {
-    temperature: number;
-    presence: boolean;
-    datetime: string;
-  };
+  const plotCountRef = useRef(plotCount);
+  const isFetchingRef = useRef(false);
 
-  function useInterval(callback: Function, delay: number) {
-    const savedCallback = useRef<typeof callback>();
+  useEffect(() => {
+    plotCountRef.current = plotCount;
+  }, [plotCount]);
 
-    // Remember the latest callback.
-    useEffect(() => {
-      savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    useEffect(() => {
-      function tick() {
-        savedCallback.current?.();
-      }
-      if (delay !== null) {
-        let id = setInterval(tick, delay);
-        return () => clearInterval(id);
-      }
-    }, [delay]);
-  }
-
-  const handlePlotCountChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    let plotCountValue = parseInt(e.target.value);
-    // console.log(plotCountValue);
-    setPlotCount(plotCountValue);
-    // console.log(plotCount)
-    // await getData();
+  const handlePlotCountChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPlotCount(parseInt(e.target.value));
   };
 
   const handleSetAPIUrl = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     localStorage.setItem("api_url", apiUrl);
-    getData();
   };
 
   const handleChangeAPIUrl = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,33 +63,29 @@ export default function Home() {
   };
 
   const handleChangeTemp = (e: ChangeEvent<HTMLInputElement>) => {
-    let tempInputValue = parseInt(e.target.value);
-    setUserTemp(tempInputValue);
+    setUserTemp(parseInt(e.target.value));
   };
 
   const handleChangeLight = (e: ChangeEvent<HTMLInputElement>) => {
-    let lightInputValue = e.target.value;
-    setUserLight(lightInputValue);
+    setUserLight(e.target.value);
   };
 
   const handleChangeLightDuration = (e: ChangeEvent<HTMLInputElement>) => {
-    let lightDurationInputValue = e.target.value;
-    setLightDuration(lightDurationInputValue);
+    setLightDuration(e.target.value);
   };
 
   const handleChangeIsSunset = () => {
-    setIsSunset((isSunset) => !isSunset);
+    setIsSunset((prev) => !prev);
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let body = {
+    const body = {
       user_temp: userTemp,
       user_light: isSunset ? "sunset" : userLight,
       light_duration: lightDuration,
     };
-    console.log(body);
-    let api_url = localStorage.getItem("api_url");
+    const api_url = localStorage.getItem("api_url");
 
     if (api_url != null) {
       fetch(api_url + "/settings", {
@@ -98,34 +94,30 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
+      }).catch(() => {
+        alert("Failed to update settings. Check your API URL and connection.");
       });
     } else {
       alert("API URL has not been set.");
     }
   };
 
-  const getData = async () => {
-    let api_url = localStorage.getItem("api_url");
-    if (!api_url) {
+  const getData = useCallback(async () => {
+    const api_url = localStorage.getItem("api_url");
+    if (!api_url || isFetchingRef.current) {
       return;
     }
-    // let api_url = apiUrl;
-    setPlotCount((prev) => prev);
-    let response = await fetch(api_url + "/graph?size=" + plotCount);
-    let raw_data = await response.json();
-    setData(await raw_data.map((point: PointType) => ({ x: point.datetime, y: point.temperature })));
-  };
-  // useEffect(() => {
-  //   if (!localStorage.getItem("api_url")) {
-  //     localStorage.setItem("api_url", apiUrl);
-  //   } else {
-  //     // setApiUrl(localStorage.getItem("api_url"));
-  //     const interval = setInterval(() => {
-  //       getData();
-  //     }, 1000);
-  //     return () => clearInterval(interval);
-  //   }
-  // }, []);
+    isFetchingRef.current = true;
+    try {
+      const response = await fetch(api_url + "/graph?size=" + plotCountRef.current);
+      const raw_data = await response.json();
+      setData(raw_data.map((point: PointType) => ({ x: point.datetime, y: point.temperature })));
+    } catch {
+      // Silently skip failed poll — will retry on next interval
+    } finally {
+      isFetchingRef.current = false;
+    }
+  }, []);
 
   useInterval(() => {
     getData();
@@ -201,21 +193,19 @@ export default function Home() {
         </div>
 
         <div className={styles["chart-section"]}>
-          {
-            <Line
-              options={chart_options}
-              data={{
-                datasets: [
-                  {
-                    label: "Temperature",
-                    data: data,
-                    borderColor: "rgb(255, 99, 132)",
-                    backgroundColor: "rgba(255, 99, 132, 0.5)",
-                  },
-                ],
-              }}
-            />
-          }
+          <Line
+            options={chart_options}
+            data={{
+              datasets: [
+                {
+                  label: "Temperature",
+                  data: data,
+                  borderColor: "rgb(255, 99, 132)",
+                  backgroundColor: "rgba(255, 99, 132, 0.5)",
+                },
+              ],
+            }}
+          />
           <div>
             <input type="range" step={5} name="vol" min="0" max="50" onChange={handlePlotCountChange} value={plotCount} />
             <span>{plotCount}</span>
