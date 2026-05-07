@@ -58,10 +58,19 @@
 .dim { color: var(--dim); }
 
 .urlInputWrap {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   min-width: 160px;
+}
+
+.urlInputWrap .errMsg {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .urlPrompt {
