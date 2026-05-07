@@ -1,23 +1,50 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-*, *:after, *:before {
-  box-sizing: border-box;
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; }
+
+:root {
+  --bg: #eaf2ec;
+  --panel: #ffffff;
+  --ink: #0c4a2c;
+  --dim: rgba(12, 74, 44, 0.6);
+  --fade: rgba(12, 74, 44, 0.2);
+  --line: rgba(12, 74, 44, 0.18);
+  --warn: #cc4c1a;
+  --err: #b82424;
+  --accent: #7cffb2;
+  --scanline: rgba(0, 0, 0, 0.02);
+  color-scheme: light;
 }
 
-html {
-  height: 100%;
+:root[data-theme="dark"] {
+  --bg: #0c100e;
+  --panel: #0c100e;
+  --ink: #7cffb2;
+  --dim: rgba(124, 255, 178, 0.55);
+  --fade: rgba(124, 255, 178, 0.18);
+  --line: rgba(124, 255, 178, 0.22);
+  --warn: #ff8a5c;
+  --err: #ff5c5c;
+  --accent: #7cffb2;
+  --scanline: rgba(124, 255, 178, 0.025);
+  color-scheme: dark;
 }
 
 body {
-  font-family: "DM Sans", sans-serif;
+  font-family: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+  font-size: 12px;
   line-height: 1.5;
-  background-color: #f0f2f9;
-  min-height: 100%;
-  margin: 0;
-  color: #1a1a2e;
+  background: var(--bg);
+  color: var(--ink);
 }
 
-img {
-  max-width: 100%;
-  display: block;
+img { max-width: 100%; display: block; }
+
+@keyframes tpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes tblink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; }
 }
